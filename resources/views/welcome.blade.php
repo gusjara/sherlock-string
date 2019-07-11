@@ -81,17 +81,33 @@
                 </div>
             @endif --}}
             <div class="container pt-5">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-10 offset-md-2">
-                            <div class="col-md-8">
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="col-md-4">
-                                <button class="btn btn-success">Submit</button>
+                <div class="col-md-12">
+                    <form action="" class="form form-horizontal">
+                        <div class="row">
+                            <div class="form-group col-md-10 offset-md-2">
+                                <div class="col-md-6 form-group">
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="col-md-4 ">
+                                    <button class="btn btn-success float-right">Submit</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="container pt-2">
+                <div class="col-md-10 offset-md-2">
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Date Time</th>
+                                <th>Input</th>
+                                <th>Output</th>
+                                <th>Valid</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
 

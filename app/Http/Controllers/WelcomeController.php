@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Result;
 use Illuminate\Http\Request;
 
 class WelcomeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+    //funcion para reemplazar caracteres
     public function str_replace_first($from, $to, $content)
     {
         $from = '/'.preg_quote($from, '/').'/';
@@ -18,24 +16,20 @@ class WelcomeController extends Controller
         return $this->preg_replace($from, $to, $content, 1);
     }
 
+    //funcion obtener mayor ocurrencua caracter
     function getMaxOccuringChar($str)  
     {  
-        global $ASCII_SIZE; 
-        $ASCII_SIZE = 256; 
+        //variable para el tamaño
+        $tamano_ascii = 256; 
           
-        // Create array to keep the count  
-        // of individual characters and  
-        // initialize the array as 0  
-        $count = array_fill(0, $ASCII_SIZE, NULL);  
+        // array para caracteres individuales
+        $count = array_fill(0, $tamano_ascii, NULL);  
       
-        // Construct character count array  
-        // from the input string.  
+        // cuento los caracteres desde el input (request)  
         $len = strlen($str);  
-        $max = 0; // Initialize max count  
+        $max = 0; // init cero  
       
-        // Traversing through the string  
-        // and maintaining the count of  
-        // each character  
+        // recorro el string, manteniendo la cuenta de cada caracter 
         for ($i = 0; $i < ($len); $i++)  
         {  
             $count[ord($str[$i])]++;  
@@ -49,61 +43,10 @@ class WelcomeController extends Controller
         return $result;  
     }  
 
-    public function index()
+    public function index(Request $request)
     {   
-        //$ASCII_SIZE = 256;
-        //string to control
-        $string = 'aabbc';
-        $asise =$string;
-        // return str_replace('a', '-', $string);
-        //array of letters
-        $letras = [];
-        //range of letter a to z;
-        foreach (range('a', 'z') as $letra) {
-            if (substr_count($string, $letra)) {
-                $letras[] = substr_count($string, $letra);
-            }
-        }
-        // $count = array_fill(0, $ASCII_SIZE, NULL);
-        // // Construct character count array  
-        // // from the input string.  
-        // $len = strlen($string);  
-        // $max = 0; // Initialize max count  
-        
-        // // Traversing through the string  
-        // // and maintaining the count of  
-        // // each character  
-        // for ($i = 0; $i < ($len); $i++)  
-        // {  
-        //     $count[ord($string[$i])]++;  
-        //     if ($max < $count[ord($string[$i])])  
-        //     {  
-        //         $max = $count[ord($string[$i])];  
-        //         $result = $string[$i];  
-        //     }  
-        // }
-
-
-        //maixmo que se repite una letra
-        $maximo = max($letras);
-        //minimo de veces que se repite una letra
-        $minimo = min($letras);
-        // $quitar = 0;
-        // if ($maximo == $minimo) {
-        //     $quitar = $maximo;
-        // }
-        //dd('Maximo = '.$maximo . ' & Minimo = '. $minimo);
-        if ($maximo == $minimo) {
-            return "Valido ".$string;//.'    a is ' . getMaxOccuringChar($string) ;
-        } else if ((array_count_values($letras)[$minimo] == 1 && ($minimo == 1 || $minimo - $maximo == 1)) || (array_count_values($letras)[$maximo] == 1 && ($maximo == 1 || $maximo - $minimo == 1))) {
-           return  "Valido ".$string. ' - se quita ' . self::getMaxOccuringChar($string) ." y se obtiene  ". str_replace_first(self::getMaxOccuringChar($asise), '', $string);
-        } else {
-           return  "Invalido " .$string. '    a is ' . self::getMaxOccuringChar($string) ." alver ". str_replace_first(self::getMaxOccuringChar($asise), '', $string);
-        }
-
-
-
-        // return view('welcome');
+        $resultados = Result::all();
+        return view('welcome', compact($resultados));
     }
 
     /**
@@ -124,7 +67,95 @@ class WelcomeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //string acontrolar
+        $string = 'abcdefghhgfedecba';
+        //lo reasigno
+        $arr2str =$string;
+        //array letras
+        $letras = [];
+        //range of letras a - z
+        foreach (range('a', 'z') as $letra) {
+            if (substr_count($string, $letra)) {
+                $letras[] = substr_count($string, $letra);
+            }
+        }
+        //valores max y min de lestras
+        $maximo = max($letras);
+        $minimo = min($letras);
+
+        //para las occurencias
+        $arr1 = str_split($string);
+        $ocurrencias = array_count_values($arr1);
+        $letraMax = max(array_flip($ocurrencias));
+        $letraMin = min(array_flip($ocurrencias));
+        
+        //verificaciones
+        if ($maximo == $minimo) {
+            return "Valido ".$string;
+
+        }elseif ((($maximo - $minimo) >1) && ($minimo==1)) {
+            $ltemp = str_replace_first(self::getMaxOccuringChar($letraMin), '', $string);
+            $letras_temp = [];
+            foreach (range('a', 'z') as $letra2) {
+                if (substr_count($ltemp, $letra2)) {
+                    $letras_temp[] = substr_count($ltemp, $letra2);
+                }
+            }
+            $maximo_t = max($letras_temp);
+            $minimo_t = min($letras_temp);
+            if ($maximo_t == $minimo_t) {
+                return 'siii' .'  asi: '.$ltemp;
+            }else{
+                return 'noooooooo' .'  aso: '.$ltemp;
+            }
+        }elseif (($maximo - $minimo)==1 && ($minimo==1)) {
+            $ltemp = str_replace_first(self::getMaxOccuringChar($letraMin), '', $string);
+            $letras_temp = [];
+            foreach (range('a', 'z') as $letra2) {
+                if (substr_count($ltemp, $letra2)) {
+                    $letras_temp[] = substr_count($ltemp, $letra2);
+                }
+            }
+            $maximo_t = max($letras_temp);
+            $minimo_t = min($letras_temp);
+            if ($maximo_t == $minimo_t) {
+                return 'siii' .'  asi: '.$ltemp;
+            }else{
+                return 'noooooooo' .'  aso: '.$ltemp;
+            }
+        }
+        elseif (($maximo - $minimo)==1 && ($minimo > 1)) {
+            $ltemp = str_replace_first(self::getMaxOccuringChar($letraMin), '', $string);
+            $letras_temp = [];
+            foreach (range('a', 'z') as $letra2) {
+                if (substr_count($ltemp, $letra2)) {
+                    $letras_temp[] = substr_count($ltemp, $letra2);
+                }
+            }
+            $maximo_t = max($letras_temp);
+            $minimo_t = min($letras_temp);
+            if ($maximo_t == $minimo_t) {
+                return 'siii' .'  asi: '.$ltemp;
+            }else{
+                return 'noooooooo' .'  asi aca 3: '.$ltemp;
+            }
+        }elseif (($maximo - $minimo)>1) {
+            // dd($letraMin);
+            $ltemp = str_replace_first(self::getMaxOccuringChar($letraMax), '', $string);
+            $letras_temp = [];
+            foreach (range('a', 'z') as $letra2) {
+                if (substr_count($ltemp, $letra2)) {
+                    $letras_temp[] = substr_count($ltemp, $letra2);
+                }
+            }
+            $maximo_t = max($letras_temp);
+            $minimo_t = min($letras_temp);
+            if ($maximo_t == $minimo_t) {
+                return 'siii' .'  asi: '.$ltemp;
+            }else{
+                return 'noooooooo' .'  asi ultumo: '.$ltemp;
+            }
+        }
     }
 
     /**
