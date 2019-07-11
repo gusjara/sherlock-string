@@ -11,122 +11,84 @@
         <!-- Bootstrap -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-        <!-- Styles -->
-        {{-- <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
+        <!-- styles -->
+        <style>
+            .green{
+                color:green;
             }
-
-            .full-height {
-                height: 100vh;
+            .red{
+                color:red;
             }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style> --}}
+        </style>
     </head>
-    <body>
-        {{-- <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
+    <body>        
+        <div class="container pt-5">
+            <div class="row">
+                @if (session('status'))
+                <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <h4><i class="icon fa fa-check"></i> Notificación!</h4> {{ session('status') }}
+                    </div>
                 </div>
-            @endif --}}
-            <div class="container pt-5">
-                <div class="col-md-12">
-                    <form action="" class="form form-horizontal">
-                        <div class="row">
-                            <div class="form-group col-md-10 offset-md-2">
-                                <div class="col-md-6 form-group">
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="col-md-4 ">
-                                    <button class="btn btn-success float-right">Submit</button>
-                                </div>
+                @endif
+            </div>
+            <div class="col-md-12">
+                <form action="{{ route('welcome.store') }}" class="form form-horizontal" method="POST">
+                    @csrf @method('POST')
+                    <div class="row">
+                        <div class="form-group col-md-10 offset-md-2">
+                            <div class="col-md-6 col-xs-12 col-sm-12 form-group">
+                                <input type="text" name="string" class="form-control">
+                            </div>
+                            <div class="col-md-6 col-xs-12 col-sm-12">
+                                <button type="submit" class="btn btn-success float-right">Submit</button>
                             </div>
                         </div>
-                    </form>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-10 col-xs-12 col-sm-12 col-lg-10 offset-md-2">
+                    <div class="row">
+                        <div class="table-responsive ">
+                            <table class="table table-expanded">
+                                <thead>
+                                    <tr>
+                                        <th>Date Time</th>
+                                        <th>Input</th>
+                                        <th>Output</th>
+                                        <th>Valid</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if ($resultados->count()>0)
+                                        @foreach($resultados as $r)
+                                        <tr>
+                                            <td>{{$r->date_time}}</td>
+                                            <td>{{$r->input}}</td>
+                                            <td>{{$r->output}}</td>
+                                            <td>
+                                                @if ($r->result == 1)
+                                                    <span class="green">Valid</span>
+                                                @else
+                                                    <span class="red">Invalid</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    @else
+                                    <tr>
+                                        <td colspan="4" align="center"> <b>No data...</b></td>
+                                    </tr>
+                                    @endif
+                                </tbody>
+                            </table>                            
+                        </div>                            
+                    </div>
                 </div>
             </div>
-            <div class="container pt-2">
-                <div class="col-md-10 offset-md-2">
-                    <table class="table table-responsive">
-                        <thead>
-                            <tr>
-                                <th>Date Time</th>
-                                <th>Input</th>
-                                <th>Output</th>
-                                <th>Valid</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-
-            {{-- <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
-            </div> --}}
-        {{-- </div> --}}
+        </div>            
     </body>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Result;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class WelcomeController extends Controller
@@ -43,10 +44,10 @@ class WelcomeController extends Controller
         return $result;  
     }  
 
-    public function index(Request $request)
+    public function index()
     {   
         $resultados = Result::all();
-        return view('welcome', compact($resultados));
+        return view('welcome', compact('resultados'));
     }
 
     /**
@@ -68,7 +69,9 @@ class WelcomeController extends Controller
     public function store(Request $request)
     {
         //string acontrolar
-        $string = 'abcdefghhgfedecba';
+        // $string = 'asddff';
+        $string = $request->string;
+        // dd($string);
         //lo reasigno
         $arr2str =$string;
         //array letras
@@ -86,12 +89,23 @@ class WelcomeController extends Controller
         //para las occurencias
         $arr1 = str_split($string);
         $ocurrencias = array_count_values($arr1);
-        $letraMax = max(array_flip($ocurrencias));
-        $letraMin = min(array_flip($ocurrencias));
+        $new_array = array();
+        foreach($ocurrencias as $key=> $value){
+            $new_array[$value] = $key;
+        }
+        $letraMax = max($new_array);
+        $letraMin = min($new_array);
         
+        // dd($new_array);
         //verificaciones
         if ($maximo == $minimo) {
-            return "Valido ".$string;
+            $guardar = Result::create([
+                'date_time' => Carbon::now(),
+                'input' => $request->string,
+                'output' => $request->string,
+                'result' => 1,
+            ]);
+            return redirect()->route('welcome.index')->with('status', 'Creado con éxito y valido');
 
         }elseif ((($maximo - $minimo) >1) && ($minimo==1)) {
             $ltemp = str_replace_first(self::getMaxOccuringChar($letraMin), '', $string);
@@ -104,12 +118,26 @@ class WelcomeController extends Controller
             $maximo_t = max($letras_temp);
             $minimo_t = min($letras_temp);
             if ($maximo_t == $minimo_t) {
-                return 'siii' .'  asi: '.$ltemp;
+                $guardar = Result::create([
+                    'date_time' => Carbon::now(),
+                    'input' => $request->string,
+                    'output' => $ltemp,
+                    'result' => 1,
+                ]);
+                return redirect()->route('welcome.index')->with('status', 'Creado con éxito y valido primero');
             }else{
-                return 'noooooooo' .'  aso: '.$ltemp;
+                $guardar = Result::create([
+                    'date_time' => Carbon::now(),
+                    'input' => $request->string,
+                    'output' => $ltemp,
+                    'result' => 0,
+                ]);
+                return redirect()->route('welcome.index')->with('status', 'Creado con éxito y no valido primero');
             }
         }elseif (($maximo - $minimo)==1 && ($minimo==1)) {
-            $ltemp = str_replace_first(self::getMaxOccuringChar($letraMin), '', $string);
+            //TODO aqui verificar
+            // dd('macimo'.$maximo.' minimo '.$minimo.' ltemp:'.$string.' letraMIN '. $letraMin.' letramax ' .$letraMax );
+            $ltemp = str_replace_first($letraMin, '', $string);
             $letras_temp = [];
             foreach (range('a', 'z') as $letra2) {
                 if (substr_count($ltemp, $letra2)) {
@@ -118,29 +146,26 @@ class WelcomeController extends Controller
             }
             $maximo_t = max($letras_temp);
             $minimo_t = min($letras_temp);
+
             if ($maximo_t == $minimo_t) {
-                return 'siii' .'  asi: '.$ltemp;
+                $guardar = Result::create([
+                    'date_time' => Carbon::now(),
+                    'input' => $request->string,
+                    'output' => $ltemp,
+                    'result' => 1,
+                ]);
+                return redirect()->route('welcome.index')->with('status', 'Creado con éxito y valido');
             }else{
-                return 'noooooooo' .'  aso: '.$ltemp;
+                $guardar = Result::create([
+                    'date_time' => Carbon::now(),
+                    'input' => $request->string,
+                    'output' => $ltemp,
+                    'result' => 0,
+                ]);
+                return redirect()->route('welcome.index')->with('status', 'Creado con éxito y no valido');
             }
         }
         elseif (($maximo - $minimo)==1 && ($minimo > 1)) {
-            $ltemp = str_replace_first(self::getMaxOccuringChar($letraMin), '', $string);
-            $letras_temp = [];
-            foreach (range('a', 'z') as $letra2) {
-                if (substr_count($ltemp, $letra2)) {
-                    $letras_temp[] = substr_count($ltemp, $letra2);
-                }
-            }
-            $maximo_t = max($letras_temp);
-            $minimo_t = min($letras_temp);
-            if ($maximo_t == $minimo_t) {
-                return 'siii' .'  asi: '.$ltemp;
-            }else{
-                return 'noooooooo' .'  asi aca 3: '.$ltemp;
-            }
-        }elseif (($maximo - $minimo)>1) {
-            // dd($letraMin);
             $ltemp = str_replace_first(self::getMaxOccuringChar($letraMax), '', $string);
             $letras_temp = [];
             foreach (range('a', 'z') as $letra2) {
@@ -151,9 +176,48 @@ class WelcomeController extends Controller
             $maximo_t = max($letras_temp);
             $minimo_t = min($letras_temp);
             if ($maximo_t == $minimo_t) {
-                return 'siii' .'  asi: '.$ltemp;
+                $guardar = Result::create([
+                    'date_time' => Carbon::now(),
+                    'input' => $request->string,
+                    'output' => $ltemp,
+                    'result' => 1,
+                ]);
+                return redirect()->route('welcome.index')->with('status', 'Creado con éxito y valido');
             }else{
-                return 'noooooooo' .'  asi ultumo: '.$ltemp;
+                $guardar = Result::create([
+                    'date_time' => Carbon::now(),
+                    'input' => $request->string,
+                    'output' => $ltemp,
+                    'result' => 0,
+                ]);
+                return redirect()->route('welcome.index')->with('status', 'Creado con éxito y no valido');
+            }
+        }elseif (($maximo - $minimo)>1) {
+            $ltemp = str_replace_first(self::getMaxOccuringChar($letraMax), '', $string);
+            $letras_temp = [];
+            foreach (range('a', 'z') as $letra2) {
+                if (substr_count($ltemp, $letra2)) {
+                    $letras_temp[] = substr_count($ltemp, $letra2);
+                }
+            }
+            $maximo_t = max($letras_temp);
+            $minimo_t = min($letras_temp);
+            if ($maximo_t == $minimo_t) {
+                $guardar = Result::create([
+                    'date_time' => Carbon::now(),
+                    'input' => $request->string,
+                    'output' => $ltemp,
+                    'result' => 1,
+                ]);
+                return redirect()->route('welcome.index')->with('status', 'Creado con éxito y valido');
+            }else{
+                $guardar = Result::create([
+                    'date_time' => Carbon::now(),
+                    'input' => $request->string,
+                    'output' => $ltemp,
+                    'result' => 0,
+                ]);
+                return redirect()->route('welcome.index')->with('status', 'Creado con éxito y no valido');
             }
         }
     }
