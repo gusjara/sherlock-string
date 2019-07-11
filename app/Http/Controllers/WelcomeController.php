@@ -46,7 +46,7 @@ class WelcomeController extends Controller
 
     public function index()
     {   
-        $resultados = Result::all();
+        $resultados = Result::orderBy('id','desc')->paginate(6);
         return view('welcome', compact('resultados'));
     }
 
@@ -70,7 +70,7 @@ class WelcomeController extends Controller
     {
         //string acontrolar
         // $string = 'asddff';
-        $string = $request->string;
+        $string = strtolower($request->string);
         // dd($string);
         //lo reasigno
         $arr2str =$string;

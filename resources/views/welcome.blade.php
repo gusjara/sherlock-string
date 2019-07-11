@@ -39,7 +39,7 @@
                     <div class="row">
                         <div class="form-group col-md-10 offset-md-2">
                             <div class="col-md-6 col-xs-12 col-sm-12 form-group">
-                                <input type="text" name="string" class="form-control">
+                                <input type="text" name="string" class="form-control" required pattern="[A-Za-z]+" placeholder="solo letras sin espacios">
                             </div>
                             <div class="col-md-6 col-xs-12 col-sm-12">
                                 <button type="submit" class="btn btn-success float-right">Submit</button>
@@ -83,6 +83,19 @@
                                     </tr>
                                     @endif
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4" align="center">
+                                            <ul class="" style="display: flex !important;
+                                                padding-left: 0px !important;
+                                                list-style: none !important;
+                                                border-radius: 0.25rem !important;
+                                                justify-content: center !important;">
+                                                {!!$resultados->appends(Request::all())->render()!!}
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tfoot>
                             </table>                            
                         </div>                            
                     </div>
