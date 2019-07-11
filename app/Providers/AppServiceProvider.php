@@ -13,7 +13,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        //funcion para funcionar con mariadb
+        \Schema::defaultStringLength(191);
     }
 
     /**
